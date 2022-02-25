@@ -2,14 +2,23 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Week9Day5Demo.Models;
+using Week9Day5Demo.Models.Settings;
 
 namespace Week9Day5Demo.Services.Students
 {
     public class StudentsService : IStudentsService
     {
-        private const string ConnectionString =
-            @"Data Source=.;Initial Catalog=WorldLineDatabase;User ID=worldline;Password=Test@123";
+        private readonly ConnectionStrings _connectionStrings;
+        //private const string ConnectionString =
+        //    @"Data Source=.;Initial Catalog=WorldLineDatabase;User ID=worldline;Password=Test@123";
+
+        public StudentsService(IOptions<ConnectionStrings> connectionStringsAccessor)
+        {
+            _connectionStrings = connectionStringsAccessor.Value;
+        }
+
 
         #region Synchronous Methods
 
@@ -17,7 +26,7 @@ namespace Week9Day5Demo.Services.Students
         {
             var students = new List<Student>();
 
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("select * from students", connection))
                 {
@@ -47,7 +56,7 @@ namespace Week9Day5Demo.Services.Students
 
         public void Insert(Student student)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 // Terrible programmer to write query inside of aspx source code
                 var query = $"insert into Students values({student.RollNo}, {student.Name}, {student.DateOfBirth}, {student.Percentage})";
@@ -61,7 +70,7 @@ namespace Week9Day5Demo.Services.Students
 
         public void Update(Student student)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("UpdateStudent", connection))
                 {
@@ -80,7 +89,7 @@ namespace Week9Day5Demo.Services.Students
 
         public void Delete(Student student)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("DeleteStudent", connection))
                 {
@@ -102,7 +111,7 @@ namespace Week9Day5Demo.Services.Students
         {
             var students = new List<Student>();
 
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("select * from students", connection))
                 {
@@ -132,7 +141,7 @@ namespace Week9Day5Demo.Services.Students
 
         public async Task InsertAsync(Student student)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 // Terrible programmer to write query inside of aspx source code
                 //var query = $"insert into Students values({student.RollNo}, '{student.Name}', '{student.DateOfBirth}', {student.Percentage})";
@@ -154,7 +163,7 @@ namespace Week9Day5Demo.Services.Students
 
         public async Task UpdateAsync(Student student)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("UpdateStudent", connection))
                 {
@@ -173,7 +182,7 @@ namespace Week9Day5Demo.Services.Students
 
         public async Task DeleteAsync(int rollNo)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("DeleteStudent", connection))
                 {
@@ -189,7 +198,7 @@ namespace Week9Day5Demo.Services.Students
 
         public async Task<Student> Find(int rollNo)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnectionString))
             {
                 using (var command = new SqlCommand("GetStudentByRollNo", connection))
                 {

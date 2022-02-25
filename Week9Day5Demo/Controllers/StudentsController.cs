@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Week9Day5Demo.Data;
 using Week9Day5Demo.Models;
 using Week9Day5Demo.Services;
 using Week9Day5Demo.Services.Students;
@@ -8,17 +11,22 @@ namespace Week9Day5Demo.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly IStudentsService _studentsService;
+        //private readonly IStudentsService _studentsService;
+        //public StudentsController(IStudentsService studentsService)
+        //{
+        //    _studentsService = studentsService;
+        //}
 
-        public StudentsController(IStudentsService studentsService)
+        private readonly ApplicationDbContext _applicationDbContext;
+        public StudentsController(ApplicationDbContext applicationDbContext)
         {
-            _studentsService = studentsService;
+            _applicationDbContext = applicationDbContext;
         }
 
         public async Task<IActionResult> Index()
         {
-            //var studentsService = new StudentsService();
-            var students = await _studentsService.GetAllStudentsAsync();
+            //var students = await _studentsService.GetAllStudentsAsync();
+            var students = await _applicationDbContext.Students.ToListAsync();
 
             return View(students);
         }
@@ -41,8 +49,9 @@ namespace Week9Day5Demo.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            //var studentService = new StudentsService();
-            await _studentsService.InsertAsync(student);
+            //await _studentsService.InsertAsync(student);
+            await _applicationDbContext.Students.AddAsync(student);
+            await _applicationDbContext.SaveChangesAsync();
 
             TempData["success-msg"] = "Student has been successfully created!!";
 
@@ -52,7 +61,8 @@ namespace Week9Day5Demo.Controllers
         // Get
         public async Task<IActionResult> Edit(int rollNo)
         {
-            var studentFromDb = await _studentsService.Find(rollNo);
+            //var studentFromDb = await _studentsService.Find(rollNo);
+            var studentFromDb = await _applicationDbContext.FindAsync<Student>(rollNo);
 
             if (studentFromDb == null)
                 return NotFound();
@@ -72,8 +82,11 @@ namespace Week9Day5Demo.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            await _studentsService.UpdateAsync(student);
-            
+            //await _studentsService.UpdateAsync(student);
+            _applicationDbContext.Update(student);
+            await _applicationDbContext.SaveChangesAsync();
+
+
             TempData["success-msg"] = "Student has been successfully updated!!";
 
             return RedirectToAction("Index");
@@ -82,9 +95,13 @@ namespace Week9Day5Demo.Controllers
         // Get
         public async Task<IActionResult> Delete(int rollNo)
         {
-            await _studentsService.DeleteAsync(rollNo);
+            //await _studentsService.DeleteAsync(rollNo);
 
-            return Redirect("Index");
+            var studentFromDb = await _applicationDbContext.FindAsync<Student>(rollNo);
+            _applicationDbContext.Students.Remove(studentFromDb);
+            await _applicationDbContext.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
     }
 }

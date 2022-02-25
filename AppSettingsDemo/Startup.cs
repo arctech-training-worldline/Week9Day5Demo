@@ -8,13 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Week9Day5Demo.Data;
-using Week9Day5Demo.Models.Settings;
-using Week9Day5Demo.Services;
-using Week9Day5Demo.Services.Students;
+using AppSettingsDemo.Models.Settings;
 
-namespace Week9Day5Demo
+namespace AppSettingsDemo
 {
     public class Startup
     {
@@ -29,12 +25,9 @@ namespace Week9Day5Demo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            //services.AddScoped<IStudentsService, StudentsService>();
-
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
 
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.Configure<ShaktimanMartSettings>(Configuration.GetSection("ShaktimanMartSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
