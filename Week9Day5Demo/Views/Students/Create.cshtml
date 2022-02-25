@@ -1,0 +1,43 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "New Student";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2>New Student</h2>
+        </div>
+    </div>
+</div>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="RollNo"></label>
+        <input asp-for="RollNo" class="form-control"/>
+        <span asp-validation-for="RollNo" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DateOfBirth"></label>
+        <input asp-for="DateOfBirth" class="form-control"/>
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Percentage"></label>
+        <input asp-for="Percentage" class="form-control"/>
+        <span asp-validation-for="Percentage" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary form-btn-size">Create</button>
+    <a asp-controller="Students" asp-action="Index" class="btn btn-secondary form-btn-size">Back to List</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

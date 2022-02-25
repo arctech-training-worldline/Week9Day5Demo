@@ -1,0 +1,80 @@
+﻿@model List<Student>
+@{
+    ViewData["Title"] = "Index Pop";
+}
+
+<partial name="_SuccessMessagePartial" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2>Student List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-controller="Students" asp-action="Create" class="btn btn-primary">
+                Create New Student
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered table-hover" width="100%">
+    <thead>
+    <tr>
+        <th>Roll No</th>
+        <th>Name</th>
+        <th>Date of Birth</th>
+        <th>Percentage</th>
+        <th>&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td>@student.RollNo</td>
+            <td>@student.Name</td>
+            <td>@student.DateOfBirth</td>
+            <td>@student.Percentage</td>
+            <td>
+                <div class="btn-group">
+                    <a asp-controller="Students" asp-action="Edit" asp-route-rollNo="@student.RollNo" 
+                       class="btn btn-primary row-btn-size">Edit</a>
+                       
+                    @*<a asp-controller="Students" asp-action="Delete" asp-route-rollNo="@student.RollNo" 
+                       class="btn btn-danger row-btn-size"
+                       onclick="return confirmDelete(@student.RollNo);">Delete</a>*@
+
+                    <a asp-controller="Students" asp-action="Delete" asp-route-rollNo="@student.RollNo" 
+                       class="btn btn-danger row-btn-size"
+                       onclick="confirmDelete2(@student.RollNo, this.href); return false;">Delete</a>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function confirmDelete(rollNo) {
+            return confirm("Do you really want to delete Student with Roll No: " + rollNo);
+        }
+
+        function confirmDelete2(rollNo, href) {
+            Swal.fire({
+                title: "Do you really want to delete Student with Roll No: " + rollNo,
+                showCancelButton: true,
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = href;
+                }
+            })
+        }
+
+    </script>
+}
+
+
